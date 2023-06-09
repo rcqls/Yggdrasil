@@ -1,4 +1,5 @@
 using BinaryBuilder
+using BinaryBuilderBase: sanitize
 
 name = "LibUnwind"
 version = v"1.7.0"
@@ -58,11 +59,11 @@ products = [
 dependencies = [
     BuildDependency("XZ_jll"),
     Dependency("Zlib_jll"),
-    BuildDependency("LLVMCompilerRT_jll",platforms=[Platform("x86_64", "linux"; sanitize="memory")]),
+    BuildDependency("LLVMCompilerRT_jll"; platforms=filter(p -> sanitize(p) == "memory", platforms)),
 ]
 
 # Build the tarballs. Note that libunwind started using `stdatomic.h`, which is only
 # available with GCC version 4.9 or later, so we need to set a higher preferred version
 # than the default.
 build_tarballs(ARGS, name, version, sources, script, platforms, products, dependencies;
-               julia_compat="1.10", preferred_gcc_version=v"4.9")
+               julia_compat="1.10", preferred_gcc_version=v"5")
